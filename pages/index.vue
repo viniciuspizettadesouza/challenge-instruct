@@ -1,5 +1,5 @@
 <template>
-  <div class="leads">
+  <div class="leads container">
     <Logo />
     <!-- <Logo dark-background /> -->
     <h1 class="leads__title">Leads</h1>
@@ -62,6 +62,11 @@ export default {
 </script>
 
 <style lang="scss" scoped="true">
+.container {
+  padding-right: 25px;
+  padding-left: 25px;
+}
+
 .leads {
   &__title {
     margin: 1.4rem 0;
@@ -72,29 +77,52 @@ export default {
 
 #leads {
   font-family: Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;
 }
 
 #leads td,
 #leads th {
-  border: 1px solid #ddd;
-  padding: 8px;
+  padding: 12px;
+  text-align: left;
+}
+
+#leads td:first-child {
+  border-radius: 10px 0 0 10px;
+  text-align: center;
+}
+
+#leads td:last-child {
+  border-radius: 0 10px 10px 0;
 }
 
 #leads tr:nth-child(even) {
-  background-color: #f2f2f2;
+  background-color: $blue;
+  color: $grey;
 }
 
 #leads tr:hover {
-  background-color: #ddd;
+  background-color: $green;
+  color: $dark-blue;
+}
+
+#leads tr {
+  border-collapse: collapse;
+  border-radius: 0 10px 10px 0;
 }
 
 #leads th {
   padding-top: 12px;
   padding-bottom: 12px;
-  text-align: left;
-  background-color: $blue;
+  background-color: $dark-blue;
   color: white;
+}
+
+#leads th:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+#leads th:last-child {
+  border-radius: 0 10px 10px 0;
 }
 </style>
