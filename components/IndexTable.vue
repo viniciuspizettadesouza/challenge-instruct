@@ -5,25 +5,26 @@
       <th>Name</th>
       <th>Username</th>
       <th>Email</th>
-      <th colspan="5">Address</th>
+      <th>Address</th>
+      <th>Zipcode</th>
       <th>Phone</th>
       <th>Website</th>
-      <th colspan="3">Company</th>
+      <th>Company</th>
+      <th>Company categories</th>
     </tr>
     <tr v-for="lead in leadsOptions" :key="lead.id">
       <td>{{ lead.id }}</td>
       <td>{{ lead.name }}</td>
       <td>{{ lead.username }}</td>
       <td>{{ lead.email }}</td>
-      <td>{{ lead.address.street }}</td>
-      <td>{{ lead.address.suite }}</td>
-      <td>{{ lead.address.city }}</td>
+      <td>
+        {{ lead.address.city }}, {{ lead.address.street }},
+        {{ lead.address.suite }}
+      </td>
       <td>{{ lead.address.zipcode }}</td>
-      <td>{{ lead.address.geo }}</td>
       <td>{{ lead.phone }}</td>
       <td>{{ lead.website }}</td>
       <td>{{ lead.company.name }}</td>
-      <td>{{ lead.company.catchPhrase }}</td>
       <td>{{ lead.company.bs }}</td>
     </tr>
   </table>
@@ -68,17 +69,14 @@ export default {
   border-radius: 0 10px 10px 0;
 }
 
-#leads tr:nth-child(even) {
-  background-color: $blue;
-  color: $grey;
-}
-
 #leads tr:hover {
   background-color: $green;
   color: $dark-blue;
 }
 
 #leads tr {
+  background-color: $grey;
+  color: $dark-blue;
   border-collapse: collapse;
   border-radius: 0 10px 10px 0;
 }
