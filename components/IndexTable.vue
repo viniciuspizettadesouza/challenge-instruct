@@ -12,7 +12,7 @@
       <th>Company</th>
       <th>Company categories</th>
     </tr>
-    <tr v-for="lead in leadsOptions" :key="lead.id">
+    <tr v-for="lead in leadsTable" :key="lead.id">
       <td>{{ lead.id }}</td>
       <td>{{ lead.name }}</td>
       <td>{{ lead.username }}</td>
@@ -34,15 +34,13 @@
 export default {
   name: 'IndexTable',
   props: {
-    leadsOptions: {
+    leadsTable: {
       type: Array,
       default: null,
     },
   },
   data() {
-    return {
-      // leadsOptions: null,
-    }
+    return {}
   },
 }
 </script>

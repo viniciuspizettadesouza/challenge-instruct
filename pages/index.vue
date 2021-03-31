@@ -21,7 +21,7 @@
         </select>
       </span>
     </template>
-    <IndexTable :leads-options="leadsOptions" />
+    <IndexTable :leads-table="leadsTable" />
   </div>
 </template>
 
@@ -32,12 +32,13 @@ export default {
   components: { IndexTable },
   data() {
     return {
-      leads: null,
-      leadsOptions: null,
+      leadsJson: [],
+      leadsTable: [],
       nameSelected: null,
-      nameOptions: null,
+      nameOptions: [],
       categorySelected: null,
-      categoryOptions: null,
+      categoryOptions: [],
+      filter: [],
     }
   },
   created() {
@@ -49,8 +50,8 @@ export default {
         response
           .json()
           .then((json) => {
-            this.leads = json
-            this.leadsOptions = this.leads
+            this.leadsJson = json
+            this.leadsTable = this.leadsJson
             this.filterNameOptions()
             this.filterCategoryOptions()
           })
@@ -60,35 +61,51 @@ export default {
       )
     },
     filterNameOptions() {
-      this.nameOptions = this.leads.map((item) => item.name)
+      this.nameOptions = this.leadsJson.map((item) => item.name)
     },
     filterCategoryOptions() {
       const options = this.getCategoryOptions()
       this.categoryOptions = options.map((item) => item)
     },
     getCategoryOptions() {
-      let options = this.leads.map((item) => item.company.bs)
+      let options = this.leadsJson.map((item) => item.company.bs)
       options = options.toString().split(/[ ,]+/).join(',')
       options = options.split(',')
       return options.filter((value, index) => options.indexOf(value) === index)
     },
-    selectNameFiltered(name) {
-      this.leadsOptions = this.leads.filter((item) => item.name === name)
-    },
-    selectCategoryFiltered(category) {
-      this.leadsOptions = this.leads.filter((item) =>
-        item.company.bs.includes(category)
+    filterLeadsTable(selected) {
+      this.leadsTable = this.leadsJson.filter(
+        (item) => item.company.bs.includes(selected) || item.name === selected
       )
     },
     changeNameOption() {
-      if (this.nameSelected != null) {
-        this.selectNameFiltered(this.nameSelected)
+      const nameSelected = this.nameSelected
+      if (!nameSelected) {
+        return
       }
+      this.updateFilter(nameSelected)
     },
     changeCategoryOption() {
-      if (this.categorySelected != null) {
-        this.selectCategoryFiltered(this.categorySelected)
+      const categorySelected = this.categorySelected
+      if (!categorySelected) {
+        return
       }
+      this.updateFilter(categorySelected)
+    },
+    updateFilter(item) {
+      let filter = this.filter
+      const selected = this.checkSelected(item, filter)
+      if (selected !== true) {
+        filter = this.addFilter(item)
+      }
+      this.filterLeadsTable(filter)
+    },
+    checkSelected(item, filter) {
+      return filter.includes(item)
+    },
+    addFilter(item) {
+      this.filter.push(item)
+      return this.filter
     },
   },
 }
