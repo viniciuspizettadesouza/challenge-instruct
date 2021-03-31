@@ -3,40 +3,29 @@
     <Logo />
     <!-- <Logo dark-background /> -->
     <h1 class="leads__title">Leads</h1>
-    <template>
-      <span>
-        <select v-model="nameSelected" @change="changeNameOption">
-          <option v-for="name in nameOptions" :key="name">
-            {{ name }}
-          </option>
-        </select>
-      </span>
-    </template>
-    <template>
-      <span>
-        <select v-model="categorySelected" @change="changeCategoryOption">
-          <option v-for="option in categoryOptions" :key="option">
-            {{ option }}
-          </option>
-        </select>
-      </span>
-    </template>
+    <SelectFilterTable
+      :name-options="nameOptions"
+      :category-options="categoryOptions"
+      :leads-json="leadsJson"
+      @active-filter="updateFilter('filters', $event)"
+      @leads-filtered="filterLeadsTable('leads-filtered', $event)"
+    />
+    {{ filter }}
     <IndexTable :leads-table="leadsTable" />
   </div>
 </template>
 
 <script>
+import SelectFilterTable from '~/components/SelectFilterTable.vue'
 import IndexTable from '~/components/IndexTable.vue'
 
 export default {
-  components: { IndexTable },
+  components: { SelectFilterTable, IndexTable },
   data() {
     return {
       leadsJson: [],
       leadsTable: [],
-      nameSelected: null,
       nameOptions: [],
-      categorySelected: null,
       categoryOptions: [],
       filter: [],
     }
@@ -73,39 +62,11 @@ export default {
       options = options.split(',')
       return options.filter((value, index) => options.indexOf(value) === index)
     },
-    filterLeadsTable(selected) {
-      this.leadsTable = this.leadsJson.filter(
-        (item) => item.company.bs.includes(selected) || item.name === selected
-      )
+    filterLeadsTable(key, event) {
+      this.leadsTable = event
     },
-    changeNameOption() {
-      const nameSelected = this.nameSelected
-      if (!nameSelected) {
-        return
-      }
-      this.updateFilter(nameSelected)
-    },
-    changeCategoryOption() {
-      const categorySelected = this.categorySelected
-      if (!categorySelected) {
-        return
-      }
-      this.updateFilter(categorySelected)
-    },
-    updateFilter(item) {
-      let filter = this.filter
-      const selected = this.checkSelected(item, filter)
-      if (selected !== true) {
-        filter = this.addFilter(item)
-      }
-      this.filterLeadsTable(filter)
-    },
-    checkSelected(item, filter) {
-      return filter.includes(item)
-    },
-    addFilter(item) {
-      this.filter.push(item)
-      return this.filter
+    updateFilter(key, event) {
+      this.filter = event
     },
   },
 }
