@@ -8,10 +8,10 @@
       :category-options="categoryOptions"
       :leads-json="leadsJson"
       @active-filter="updateFilter('filters', $event)"
-      @leads-filtered="filterLeadsTable('leads-filtered', $event)"
+      @leads-filtered="filterLeadsJson('leads-filtered', $event)"
     />
     {{ filter }}
-    <IndexTable :leads-table="leadsTable" />
+    <IndexTable :leads-json="leadsJson" />
   </div>
 </template>
 
@@ -24,7 +24,6 @@ export default {
   data() {
     return {
       leadsJson: [],
-      leadsTable: [],
       nameOptions: [],
       categoryOptions: [],
       filter: [],
@@ -40,30 +39,37 @@ export default {
           .json()
           .then((json) => {
             this.leadsJson = json
-            this.leadsTable = this.leadsJson
-            this.filterNameOptions()
-            this.filterCategoryOptions()
+            this.getNameOptions()
+            this.getCategoryOptions()
+            this.updateOptions()
           })
           .catch((error) => {
             console.error('Failed retrieving information', error)
           })
       )
     },
-    filterNameOptions() {
+    getNameOptions() {
       this.nameOptions = this.leadsJson.map((item) => item.name)
     },
-    filterCategoryOptions() {
-      const options = this.getCategoryOptions()
+    getCategoryOptions() {
+      const options = this.filterCategoryOptions()
       this.categoryOptions = options.map((item) => item)
     },
-    getCategoryOptions() {
+    filterCategoryOptions() {
       let options = this.leadsJson.map((item) => item.company.bs)
       options = options.toString().split(/[ ,]+/).join(',')
       options = options.split(',')
       return options.filter((value, index) => options.indexOf(value) === index)
     },
-    filterLeadsTable(key, event) {
-      this.leadsTable = event
+    updateOptions() {
+      const options = this.leadsJson
+      options.map((item, index) => {
+        options[index].company.bs = item.company.bs.split(' ')
+        return null
+      })
+    },
+    filterLeadsJson(key, event) {
+      this.leadsJson = event
     },
     updateFilter(key, event) {
       this.filter = event

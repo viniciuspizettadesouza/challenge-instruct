@@ -58,7 +58,7 @@ export default {
       if (selected !== true) {
         filter = this.addFilter(item)
       }
-      this.filterLeadsTable(filter)
+      this.filterLeadsJson(filter)
     },
     checkSelected(item, filter) {
       return filter.includes(item)
@@ -68,11 +68,17 @@ export default {
       this.$emit('active-filter', this.filter)
       return this.filter
     },
-    filterLeadsTable(selected) {
-      const leads = this.leadsJson.filter(
-        (item) =>
-          item.company.bs.includes(selected) || item.name.includes(selected)
-      )
+    filterLeadsJson(selected) {
+      let leads = this.leadsJson
+      leads = leads.filter((item) => {
+        const name = selected.includes(item.name)
+        const company = item.company.bs.includes(selected.toString())
+        if (name || company) {
+          return item
+        }
+        return null
+      })
+
       this.$emit('leads-filtered', leads)
     },
   },
