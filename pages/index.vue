@@ -7,7 +7,8 @@
       :name-options="nameOptions"
       :category-options="categoryOptions"
       :leads-json="leadsJson"
-      @active-filter="updateFilter('filters', $event)"
+      @name-filter="updateFilter('name-filter', $event)"
+      @company-filter="updateFilter('company-filter', $event)"
       @leads-filtered="filterLeadsJson('leads-filtered', $event)"
     />
     {{ filter }}
@@ -72,7 +73,7 @@ export default {
       this.leadsJson = event
     },
     updateFilter(key, event) {
-      this.filter = event
+      this.filter.push(event.toString())
     },
   },
 }

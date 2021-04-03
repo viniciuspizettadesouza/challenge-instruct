@@ -68,13 +68,13 @@ export default {
 }
 
 #leads tr:hover {
-  background-color: $green;
-  color: $dark-blue;
+  background-color: $secondary;
+  color: $default;
 }
 
 #leads tr {
-  background-color: $grey;
-  color: $dark-blue;
+  background-color: $border-color;
+  color: $default;
   border-collapse: collapse;
   border-radius: 0 10px 10px 0;
 }
@@ -82,7 +82,7 @@ export default {
 #leads th {
   padding-top: 12px;
   padding-bottom: 12px;
-  background-color: $dark-blue;
+  background-color: $default;
   color: white;
 }
 

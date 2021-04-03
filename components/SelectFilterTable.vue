@@ -1,11 +1,21 @@
 <template>
   <span>
-    <select v-model="nameSelected" @change="changeNameOption">
+    <select
+      :disabled="nameFilterDisabled"
+      class="selectBox disabled"
+      @change="changeNameOption($event)"
+    >
+      <option class="select-tip">Name Filter</option>
       <option v-for="name in nameOptions" :key="name">
         {{ name }}
       </option>
     </select>
-    <select v-model="categorySelected" @change="changeCategoryOption">
+    <select
+      :disabled="categoryFilterDisabled"
+      class="selectBox"
+      @change="changeCategoryOption($event)"
+    >
+      <option class="select-tip">Category Filter</option>
       <option v-for="option in categoryOptions" :key="option">
         {{ option }}
       </option>
@@ -32,57 +42,90 @@ export default {
   },
   data() {
     return {
-      nameSelected: null,
-      categorySelected: null,
-      filter: [],
+      nameFilter: [],
+      categoryFilter: [],
+      nameFilterDisabled: false,
+      categoryFilterDisabled: false,
     }
   },
   methods: {
-    changeNameOption() {
-      const nameSelected = this.nameSelected
+    changeNameOption(event) {
+      const nameSelected = event.target.value
       if (!nameSelected) {
         return
       }
-      this.updateFilter(nameSelected)
+      let filter = this.nameFilter
+      const selected = this.checkSelected(nameSelected, filter)
+      if (selected !== true) {
+        filter = this.addNameFilter(nameSelected)
+      }
+      this.filterLeadsByName(filter)
+      this.nameFilterDisabled = true
     },
-    changeCategoryOption() {
-      const categorySelected = this.categorySelected
+    changeCategoryOption(event) {
+      const categorySelected = event.target.value
       if (!categorySelected) {
         return
       }
-      this.updateFilter(categorySelected)
-    },
-    updateFilter(item) {
-      let filter = this.filter
-      const selected = this.checkSelected(item, filter)
+      let filter = this.categoryFilter
+      const selected = this.checkSelected(categorySelected, filter)
       if (selected !== true) {
-        filter = this.addFilter(item)
+        filter = this.addCategoryFilter(categorySelected)
       }
-      this.filterLeadsJson(filter)
+      this.filterLeadsByCompany(filter)
+      console.log(filter.length)
+      if (filter.length > 2) {
+        this.categoryFilterDisabled = true
+      }
     },
     checkSelected(item, filter) {
       return filter.includes(item)
     },
-    addFilter(item) {
-      this.filter.push(item)
-      this.$emit('active-filter', this.filter)
-      return this.filter
+    addNameFilter(item) {
+      this.nameFilter.push(item)
+      this.$emit('name-filter', this.nameFilter)
+      return this.nameFilter
     },
-    filterLeadsJson(selected) {
+    addCategoryFilter(item) {
+      this.categoryFilter.push(item)
+      this.$emit('company-filter', this.categoryFilter)
+      return this.categoryFilter
+    },
+    filterLeadsByName(selected) {
       let leads = this.leadsJson
       leads = leads.filter((item) => {
         const name = selected.includes(item.name)
-        const company = item.company.bs.includes(selected.toString())
-        if (name || company) {
+        if (name) {
           return item
         }
         return null
       })
-
+      this.$emit('leads-filtered', leads)
+    },
+    filterLeadsByCompany(selected) {
+      let leads = this.leadsJson
+      leads = leads.filter((item) => {
+        const company = item.company.bs.includes(selected.toString())
+        if (company) {
+          return item
+        }
+        return null
+      })
       this.$emit('leads-filtered', leads)
     },
   },
 }
 </script>
 
-<style scoped></style>
+<style lang="scss" scoped="true">
+.selectBox {
+  width: 140px;
+  height: 40px;
+  outline: none;
+  background: $border-color;
+  border: none;
+}
+.select-tip {
+  display: none;
+}
+</style>
