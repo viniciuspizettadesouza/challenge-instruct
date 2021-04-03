@@ -2,7 +2,7 @@
   <span>
     <select
       :disabled="nameFilterDisabled"
-      class="selectBox disabled"
+      class="select-box disabled"
       @change="changeNameOption($event)"
     >
       <option class="select-tip">Name Filter</option>
@@ -12,7 +12,7 @@
     </select>
     <select
       :disabled="categoryFilterDisabled"
-      class="selectBox"
+      class="select-box"
       @change="changeCategoryOption($event)"
     >
       <option class="select-tip">Category Filter</option>
@@ -73,7 +73,6 @@ export default {
         filter = this.addCategoryFilter(categorySelected)
       }
       this.filterLeadsByCompany(filter)
-      console.log(filter.length)
       if (filter.length > 2) {
         this.categoryFilterDisabled = true
       }
@@ -118,7 +117,7 @@ export default {
 </script>
 
 <style lang="scss" scoped="true">
-.selectBox {
+.select-box {
   width: 140px;
   height: 40px;
   outline: none;
