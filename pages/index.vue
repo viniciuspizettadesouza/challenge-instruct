@@ -7,11 +7,14 @@
       <SelectFilterTable
         :category-options="categoryOptions"
         :leads-json="leadsFiltered"
-        @name-filter="updateFilter('name-filter', $event)"
-        @category-filter="updateFilter('category-filter', $event)"
+        :category-filter-disabled="categoryFilterDisabled"
+        @name-filter="updateLeads('name-filter', $event)"
+        @category-filter="updateLeads('category-filter', $event)"
       />
-      <div v-for="item in filter" :key="item">
-        <div class="item">{{ item }}</div>
+      <div v-for="item in categoryFilter" :key="item">
+        <button class="item">
+          <div>{{ item }}</div>
+        </button>
       </div>
     </section>
     <IndexTable :leads-filtered="leadsFiltered" />
@@ -29,7 +32,8 @@ export default {
       leadsJson: [],
       leadsFiltered: [],
       categoryOptions: [],
-      filter: [],
+      categoryFilter: [],
+      categoryFilterDisabled: false,
     }
   },
   created() {
@@ -63,8 +67,14 @@ export default {
     setLeadsFiltered(item) {
       this.leadsFiltered = item
     },
-    setFilter(item) {
-      this.filter.push(item)
+    getCategoryFilter() {
+      return this.categoryFilter
+    },
+    setCategoryFilter(item) {
+      this.categoryFilter.push(item)
+    },
+    setCategoryFilterDisabled(item) {
+      this.categoryFilterDisabled = item
     },
     getCategoryOptions() {
       const options = this.filterCategoryOptions()
@@ -115,17 +125,29 @@ export default {
         }
         return null
       })
-      this.setFilter(selected)
+      const filter = this.getCategoryFilter()
+      if (filter.includes(selected)) {
+        this.setLeadsFiltered(leads)
+        return null
+      }
+      this.checkFilterLength(filter)
+      this.setCategoryFilter(selected)
       this.setLeadsFiltered(leads)
       return null
     },
-    updateFilter(key, event) {
+    updateLeads(key, event) {
       if (key === 'name-filter') {
         this.filterLeadsByName(event)
         return
       }
       const categoryFilter = event.toString()
       this.filterLeadsByCategory(categoryFilter)
+    },
+    checkFilterLength(filter) {
+      if (filter.length > 1) {
+        this.setCategoryFilterDisabled(true)
+        return null
+      }
     },
   },
 }
@@ -147,6 +169,9 @@ export default {
 
 .item {
   border: 1px solid #ccc;
+  margin-left: 20px;
+  width: 100px;
+  height: 40px;
 }
 
 .leads {

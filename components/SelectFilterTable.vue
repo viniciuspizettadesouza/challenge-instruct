@@ -27,12 +27,15 @@ export default {
       type: Array,
       default: null,
     },
+    categoryFilterDisabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       nameFilter: [],
       categoryFilter: [],
-      categoryFilterDisabled: false,
     }
   },
   computed: {
@@ -56,9 +59,6 @@ export default {
       }
       const filter = this.getCategoryFilter()
       const selected = this.checkSelected(categorySelected, filter)
-      if (filter.length > 1) {
-        this.categoryFilterDisabled = true
-      }
       if (!selected) {
         this.updateProp('category-filter', categorySelected)
         filter.push(categorySelected)
