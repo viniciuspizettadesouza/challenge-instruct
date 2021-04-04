@@ -1,15 +1,6 @@
 <template>
   <span>
-    <select
-      :disabled="nameFilterDisabled"
-      class="select-box disabled"
-      @change="changeNameOption($event)"
-    >
-      <option class="select-tip">Name Filter</option>
-      <option v-for="name in nameOptions" :key="name">
-        {{ name }}
-      </option>
-    </select>
+    <input v-model="nameFilter" />
     <select
       :disabled="categoryFilterDisabled"
       class="select-box"
@@ -20,6 +11,7 @@
         {{ option }}
       </option>
     </select>
+    <span hidden>{{ nameFilterComputed }}</span>
   </span>
 </template>
 
@@ -27,15 +19,11 @@
 export default {
   name: 'SelectFilterTable',
   props: {
-    nameOptions: {
-      type: Array,
-      default: null,
-    },
     categoryOptions: {
       type: Array,
       default: null,
     },
-    leadsJson: {
+    leadsFiltered: {
       type: Array,
       default: null,
     },
@@ -44,73 +32,47 @@ export default {
     return {
       nameFilter: [],
       categoryFilter: [],
-      nameFilterDisabled: false,
       categoryFilterDisabled: false,
     }
   },
+  computed: {
+    nameFilterComputed() {
+      const nameSelected = this.nameFilter
+      this.updateProp('name-filter', nameSelected)
+      return nameSelected
+    },
+  },
   methods: {
-    changeNameOption(event) {
-      const nameSelected = event.target.value
-      if (!nameSelected) {
-        return
-      }
-      let filter = this.nameFilter
-      const selected = this.checkSelected(nameSelected, filter)
-      if (selected !== true) {
-        filter = this.addNameFilter(nameSelected)
-      }
-      this.filterLeadsByName(filter)
-      this.nameFilterDisabled = true
+    getCategoryFilter() {
+      return this.categoryFilter
+    },
+    setCategoryFilter(item) {
+      this.categoryFilter = item
     },
     changeCategoryOption(event) {
       const categorySelected = event.target.value
       if (!categorySelected) {
         return
       }
-      let filter = this.categoryFilter
+      const filter = this.getCategoryFilter()
       const selected = this.checkSelected(categorySelected, filter)
-      if (selected !== true) {
-        filter = this.addCategoryFilter(categorySelected)
-      }
-      this.filterLeadsByCompany(filter)
-      if (filter.length > 2) {
+      if (filter.length > 1) {
         this.categoryFilterDisabled = true
       }
+      if (!selected) {
+        this.updateProp('category-filter', categorySelected)
+        filter.push(categorySelected)
+        this.setCategoryFilter(filter)
+        return filter
+      }
+      this.updateProp('category-filter', categorySelected)
     },
     checkSelected(item, filter) {
       return filter.includes(item)
     },
-    addNameFilter(item) {
-      this.nameFilter.push(item)
-      this.$emit('name-filter', this.nameFilter)
-      return this.nameFilter
-    },
-    addCategoryFilter(item) {
-      this.categoryFilter.push(item)
-      this.$emit('company-filter', this.categoryFilter)
-      return this.categoryFilter
-    },
-    filterLeadsByName(selected) {
-      let leads = this.leadsJson
-      leads = leads.filter((item) => {
-        const name = selected.includes(item.name)
-        if (name) {
-          return item
-        }
-        return null
-      })
-      this.$emit('leads-filtered', leads)
-    },
-    filterLeadsByCompany(selected) {
-      let leads = this.leadsJson
-      leads = leads.filter((item) => {
-        const company = item.company.bs.includes(selected.toString())
-        if (company) {
-          return item
-        }
-        return null
-      })
-      this.$emit('leads-filtered', leads)
+    updateProp(key, item) {
+      this.$emit(key, item)
+      return item
     },
   },
 }
