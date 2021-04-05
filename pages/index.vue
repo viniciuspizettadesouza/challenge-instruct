@@ -12,9 +12,9 @@
         @category-filter="updateLeads('category-filter', $event)"
       />
       <div v-for="item in categoryFilter" :key="item">
-        <button class="item">
-          <div>{{ item }}</div>
-        </button>
+        <div class="item-container">
+          <p class="item">{{ item }}</p>
+        </div>
       </div>
     </section>
     <IndexTable :leads-filtered="leadsFiltered" />
@@ -167,11 +167,17 @@ export default {
   flex-wrap: wrap;
 }
 
-.item {
-  border: 1px solid #ccc;
-  margin-left: 20px;
+.item-container {
+  background-color: $border-color;
+  padding: 12px 20px;
   width: 100px;
-  height: 40px;
+  margin: 8px 0 8px 20px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.item {
+  text-align: center;
 }
 
 .leads {

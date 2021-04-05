@@ -1,18 +1,18 @@
 <template>
-  <span>
-    <input v-model="nameFilter" />
+  <div>
+    <input v-model="nameFilter" class="input" placeholder="Search name..." />
     <select
       :disabled="categoryFilterDisabled"
-      class="select-box"
+      class="input"
       @change="changeCategoryOption($event)"
     >
-      <option class="select-tip">Category Filter</option>
+      <option class="select-option">Search Category</option>
       <option v-for="option in categoryOptions" :key="option">
         {{ option }}
       </option>
     </select>
     <span hidden>{{ nameFilterComputed }}</span>
-  </span>
+  </div>
 </template>
 
 <script>
@@ -79,14 +79,25 @@ export default {
 </script>
 
 <style lang="scss" scoped="true">
-.select-box {
-  width: 140px;
-  height: 40px;
-  outline: none;
-  background: $border-color;
-  border: none;
-}
-.select-tip {
+.select-option {
   display: none;
+  font-size: 16px;
+}
+
+.input {
+  width: 180px;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: none;
+  border-radius: 4px;
+  box-sizing: border-box;
+  outline: none;
+  color: $default;
+  background-color: $border-color;
+}
+
+.input {
+  font-size: 16px;
 }
 </style>
