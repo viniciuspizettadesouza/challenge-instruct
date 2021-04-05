@@ -4,29 +4,26 @@
     <!-- <Logo dark-background /> -->
     <h1 class="leads__title">Leads</h1>
     <section class="test-container flex flex-wrap">
-      <SelectFilterTable
+      <IndexFilterTable
         :category-options="categoryOptions"
         :leads-json="leadsFiltered"
         :category-filter-disabled="categoryFilterDisabled"
         @name-filter="updateLeads('name-filter', $event)"
         @category-filter="updateLeads('category-filter', $event)"
       />
-      <div v-for="item in categoryFilter" :key="item">
-        <div class="item-container">
-          <p class="item">{{ item }}</p>
-        </div>
-      </div>
+      <IndexCategorySelected :category-filter="categoryFilter" />
     </section>
     <IndexTable :leads-filtered="leadsFiltered" />
   </div>
 </template>
 
 <script>
-import SelectFilterTable from '~/components/SelectFilterTable.vue'
+import IndexFilterTable from '~/components/IndexFilterTable.vue'
+import IndexCategorySelected from '~/components/IndexCategorySelected.vue'
 import IndexTable from '~/components/IndexTable.vue'
 
 export default {
-  components: { SelectFilterTable, IndexTable },
+  components: { IndexFilterTable, IndexTable, IndexCategorySelected },
   data() {
     return {
       leadsJson: [],
@@ -157,27 +154,6 @@ export default {
 .container {
   padding-right: 25px;
   padding-left: 25px;
-}
-
-.flex {
-  display: flex;
-}
-
-.flex-wrap {
-  flex-wrap: wrap;
-}
-
-.item-container {
-  background-color: $border-color;
-  padding: 12px 20px;
-  width: 100px;
-  margin: 8px 0 8px 20px;
-  font-size: 16px;
-  border-radius: 4px;
-}
-
-.item {
-  text-align: center;
 }
 
 .leads {
